@@ -45,7 +45,8 @@ dyy-boot-framework  自封装微服务脚手架
         <artifactId>dyy-boot-framework</artifactId>
         <version>1.1.1-RELEASE</version>
     </parent>
-    封装各种中间件。目前已完成Redis,Kafka,MongoDb,Swagger,Nacos,第三方高德地图,第三方腾讯云/阿里云存储
+    目前已完成Redis,Kafka,MongoDb,Swagger,Nacos,第三方高德地图,第三方腾讯云/阿里云存储的封装。
+    后期陆续完善私有仓库......
 
 你需要掌握以下技能:
 
