@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.dyy.tsp.evgb.gateway</groupId>
+        <artifactId>ev-gb-gateway-root</artifactId>
+        <version>1.1.1-RELEASE</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ev-gb-gateway-protocol</artifactId>
+
+    <dependencies>
+        <!--netty封装-->
+        <dependency>
+            <groupId>com.dyy.tsp</groupId>
+            <artifactId>dyy-boot-starter-netty</artifactId>
+            <version>${boot.framework.version}</version>
+        </dependency>
+    </dependencies>
+</project>

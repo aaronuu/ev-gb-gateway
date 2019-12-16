@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>com.dyy.tsp</groupId>
+        <artifactId>dyy-boot-framework</artifactId>
+        <version>1.1.1-RELEASE</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.dyy.tsp.evgb.gateway</groupId>
+    <artifactId>ev-gb-gateway-root</artifactId>
+    <version>1.1.1-RELEASE</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <boot.framework.version>1.1.1-RELEASE</boot.framework.version>
+    </properties>
+
+    <modules>
+        <module>ev-gb-gateway-server</module>
+        <module>ev-gb-gateway-tcu</module>
+        <module>ev-gb-gateway-dispatcher</module>
+        <module>ev-gb-gateway-protocol</module>
+        <module>ev-gb-gateway-document</module>
+    </modules>
+
+    <dependencies>
+        <!--微服务公用封装-->
+        <dependency>
+            <groupId>com.dyy.tsp</groupId>
+            <artifactId>dyy-boot-starter-cloud</artifactId>
+            <version>${boot.framework.version}</version>
+        </dependency>
+        <!--通用封装依赖-->
+        <dependency>
+            <groupId>com.dyy.tsp</groupId>
+            <artifactId>dyy-boot-starter-common</artifactId>
+            <version>${boot.framework.version}</version>
+        </dependency>
+        <!--Redis封装-->
+        <dependency>
+            <groupId>com.dyy.tsp</groupId>
+            <artifactId>dyy-boot-starter-redis</artifactId>
+            <version>${boot.framework.version}</version>
+        </dependency>
+        <!--kafka封装-->
+        <dependency>
+            <groupId>com.dyy.tsp</groupId>
+            <artifactId>dyy-boot-starter-kafka</artifactId>
+            <version>${boot.framework.version}</version>
+        </dependency>
+        <!--test封装-->
+        <dependency>
+            <groupId>com.dyy.tsp</groupId>
+            <artifactId>dyy-boot-starter-test</artifactId>
+            <version>${boot.framework.version}</version>
+        </dependency>
+    </dependencies>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.dyy.tsp.evgb.gateway</groupId>
+                <artifactId>ev-gb-gateway-protocol</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>my-releases</id>
+            <url>http://127.0.0.1:8081/repository/maven-releases/</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>my-releases</id>
+            <url>http://127.0.0.1:8081/repository/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>my_snapshots</id>
+            <url>http://127.0.0.1:8081/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

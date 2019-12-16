@@ -1,0 +1,553 @@
+<html>
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./css/uikit.min.css">
+  <link rel="stylesheet" href="./css/tooltip.min.css" media="all">
+  <link rel="stylesheet" href="./css/notify.min.css" media="all">
+  <script src="./js/jquery-3.3.1.min.js"></script>
+  <script src="./js/vue.min.js"></script>
+  <script src="./js/uikit.min.js"></script>
+  <script src="./js/tooltip.min.js"></script>
+  <script src="./js/notify.min.js"></script>
+  <script src="./js/hotkeys.min-3.3.8.js"></script>
+  <script src="./js/clipboard.min.js"></script>
+  <title>网关在线监控平台</title>
+</head>
+
+<body>
+<div id="main" class="uk-height-1-1" style="padding:32px;min-height: 440px; min-width: 1098px;">
+  <div class="uk-panel uk-panel-box uk-overflow-container uk-height-1-1"
+       style="display:inline-block;width:48%;padding: 0;">
+    <div v-for="msg in msg2Show" :class="{
+                'uk-text-muted  uk-text-center': msg.type == 'sys',
+                'uk-alert': msg.type == 'biz-recv',
+                'uk-alert-success': msg.type == 'biz-send',
+            }" style="padding: 0 10px 10px 10px;margin-bottom: 10px;">
+
+        <span v-if="msg.type == 'sys'" style="color: #aaa;">
+          {{ msg.timestamp }}: {{ msg.content }}
+        </span>
+
+      <span v-if="msg.type == 'biz-recv' || msg.type == 'biz-send'">
+          {{ msg.timestamp }} &nbsp;&nbsp;
+        </span>
+
+      <a v-if="msg.type == 'biz-recv'"></a>
+      <pre v-if="msg.type == 'biz-recv' || msg.type == 'biz-send'" style="background: transparent;
+                        padding: 0;
+                        margin: 0;"><code>{{ msg.content }}</code></pre>
+    </div>
+  </div>
+
+  <div id="operation-box" style="width:49%;float:right;">
+    <div class="uk-form">
+      <div class="uk-form-row">
+        <input style="width:66%;" type="text" v-model="url" placeholder="WebSocket 服务器地址">
+        <button class="uk-button uk-button-primary" :disabled="connected" @click="doConnect()" :style="buttonSuccess">
+          <i id="connecting-spinner" class="uk-icon-spin uk-icon-spinner" style="display: none;"></i>
+          <span v-show="connected">已</span>连接
+          <span v-show="!connected"></span>
+        </button>
+        <button class="uk-button uk-button-primary" :disabled="!connected" @click="doDisconnect()"
+                style="float:right;">断开</button>
+      </div>
+      <div v-show="url.startsWith('ws://')" data-uk-alert class="uk-alert-warning"
+           style="width:fit-content;padding: 4px 6px;">
+      </div>
+      <div class="uk-form-row" style="margin-top: 15px;">
+          <textarea class="uk-width-1-1" type="text" v-model="msg2Send" :disabled="!connected"
+                    onkeydown="onkeydown_tab(this)" style="min-height: 150px;"
+                    placeholder="要发送的消息内容"></textarea>
+      </div>
+      <div class="uk-form-row">
+        <button class="uk-button uk-button-primary" :disabled="!connected" @click="doSend()"
+                style="float: right;">发送</button>
+      </div>
+    </div>
+    <!-- 快捷消息 -->
+    <div class="masonry" v-if="modalShow">
+      <div class="item">
+        <label>定位时间：</label>
+        <span>{{dataDetail.oTime}}</span>
+      </div>
+      <div class="item">
+        <label>报警标记：</label>
+        <span>{{dataDetail.whetherAlarm}}</span>
+      </div>
+      <div class="item">
+        <label>电瓶电压：</label>
+        <span>{{dataDetail.batteryVoltage}}</span>
+      </div>
+      <div class="item">
+        <label>ACC：</label>
+        <span>{{dataDetail.ACC}}</span>
+      </div>
+      <div class="item">
+        <label>车辆状态：</label>
+        <span>{{dataDetail.vehicleStatus}}</span>
+      </div>
+      <div class="item">
+        <label>车速：</label>
+        <span>{{dataDetail.speedCar}}</span>
+      </div>
+      <div class="item">
+        <label>里程：</label>
+        <span>{{dataDetail.mileage}}</span>
+      </div>
+      <div class="item">
+        <label>位置：</label>
+        <span>{{dataDetail.location}}</span>
+      </div>
+      <div class="item">
+        <label>高程：</label>
+        <span>{{dataDetail.elevation}}</span>
+      </div>
+      <div class="item">
+        <label>油量：</label>
+        <span>{{dataDetail.oil}}</span>
+      </div>
+      <div class="item">
+        <label>左前轮胎压：</label>
+        <span>{{dataDetail.leftFrontPressure}}</span>
+      </div>
+      <div class="item">
+        <label>右前轮胎压：</label>
+        <span>{{dataDetail.rightFrontPressure}}</span>
+      </div>
+      <div class="item">
+        <label>左后轮胎压：</label>
+        <span>{{dataDetail.leftRearPressure}}</span>
+      </div>
+      <div class="item">
+        <label>右后轮胎压：</label>
+        <span>{{dataDetail.rightRearPressure}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+</html>
+
+<style>
+  .masonry {
+    -moz-column-count:2; /* Firefox */
+    -webkit-column-count:2; /* Safari 和 Chrome */
+    column-count:2;
+    -moz-column-gap: 10px;
+    -webkit-column-gap: 10px;
+    column-gap: 10px;
+    width: 100%;
+    margin:10px auto;
+  }
+  .item {
+    -moz-page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    break-inside: avoid;
+    word-break: break-all;
+  }
+  pre,
+  code {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    font-family: Consolas, monospace;
+  }
+</style>
+
+<script>
+  new Clipboard('.copy-btn', {
+    target: function (trigger) {
+      return trigger.nextElementSibling;
+    }
+  }).on('success', function (event) {
+    event.clearSelection()
+    UIkit.notify({
+      message: '已复制',
+      status: 'success',
+      timeout: 1000,
+      pos: 'top-right'
+    })
+  })
+
+  function formatTime(time) {
+    if (!time) {
+      time = new Date()
+    }
+    let result = ''
+    result += time.getHours() < 10 ? "0" + time.getHours() + ':' : time.getHours() + ':'
+    result += time.getMinutes() < 10 ? "0" + time.getMinutes() + ':' : time.getMinutes() + ':'
+    result += time.getSeconds() < 10 ? "0" + time.getSeconds() : time.getSeconds()
+    return result
+  }
+  function onkeydown_tab(ele) {
+    if (event.keyCode == 9) {
+      let start = ele.selectionStart
+      let end = ele.selectionEnd
+      ele.value = ele.value.substring(0, start) + "    " + ele.value.substring(end)
+      ele.selectionStart = start + 4
+      ele.selectionEnd = start + 4
+      event.returnValue = false;
+    }
+  }
+</script>
+
+<script>
+  var vm_wsp = new Vue({
+    el: '#main',
+    data: {
+      url: localStorage.wsp_url ? localStorage.wsp_url : '',
+      connected: false,
+      msg2Send: '',
+      msg2Show: [
+        {
+          type: "biz-recv", // "sys"、"biz-recv"、"biz-send"
+          timestamp: formatTime(),
+          content: '这里是历史消息窗口'
+        }
+      ],
+      wsConnection: {},
+      myMsg1: localStorage.wsp_myMsg1 ? localStorage.wsp_myMsg1 : '{"command":"connect","host":"ip.feling.net","port":80}',
+      myMsg2: localStorage.wsp_myMsg2 ? localStorage.wsp_myMsg2 : '{\n    "command": "send",\n    "data": "GET / HTTP/1.1\\r\\nHost: ip.feling.net\\r\\n\\r\\n" }',
+      myMsg3: localStorage.wsp_myMsg3 ? localStorage.wsp_myMsg3 : '',
+      dataDetail: {
+        oTime: '',
+        whetherAlarm: '',
+        batteryVoltage: '',
+        ACC: '',
+        vehicleStatus: '',
+        speedCar: '',
+        mileage: '',
+        location: '',
+        elevation: '',
+        oil: '',
+        leftFrontPressure: '',
+        rightFrontPressure: '',
+        leftRearPressure: '',
+        rightRearPressure: '',
+      },
+      modalShow: false,
+
+    },
+    methods: {
+      doConnect() {
+        if (this.connected) {
+          UIkit.notify({
+            message: '请先断开当前连接',
+            status: 'warning',
+            timeout: 3000,
+            pos: 'top-right'
+          })
+          return
+        }
+        if (!this.url.startsWith('ws://') && !this.url.startsWith('wss://')) {
+          UIkit.notify({
+            message: '无效的服务器地址',
+            status: 'warning',
+            timeout: 3000,
+            pos: 'top-right'
+          })
+          return
+        }
+        $('#connecting-spinner').show()
+        try {
+          this.wsConnection = new WebSocket(this.url)
+
+        } catch (error) {
+          $('#connecting-spinner').hide()
+          if (error) {
+            UIkit.notify({
+              message: '连接异常,请检查',
+              status: 'warning',
+              timeout: 1000,
+              pos: 'top-right'
+            })
+          }
+        }
+        this.wsConnection.onopen = () => {
+          this.connected = true
+          $('#connecting-spinner').hide()
+          this.msg2Show.push({
+            type: "sys",
+            timestamp: formatTime(),
+            content: '连接成功 (' + this.url + ')'
+          })
+          $("#msg-box").animate({ scrollTop: $("#msg-box").prop("scrollHeight") }, 400)
+        }
+        this.wsConnection.onmessage = (event) => {
+
+          this.msg2Show.push({
+            type: "biz-recv",
+            timestamp: formatTime(),
+            content: event.data
+          })
+          $("#msg-box").animate({ scrollTop: $("#msg-box").prop("scrollHeight") }, 400)
+          const result = event.data;
+          let data;
+          try {
+            data =  JSON.parse(result);
+          } catch (error) {
+            data = {};
+          }
+          if(data.command==null || data.command == undefined){
+            return;
+          }
+          if(data.command != "LOCATION_REPORT"){
+            return;
+          }
+          if(!this.isNullObj(data)){
+            this.modalShow = true;
+          } else {
+            this.modalShow = false;
+            return;
+          }
+          this.dataDetail.oTime = formatDate(data.messageDataUnit.json.time)
+          this.dataDetail.whetherAlarm = formatAlarm(data.messageDataUnit.json.alarmInfo.value)
+          this.dataDetail.batteryVoltage = formatBatteryVoltage(data.messageDataUnit.json.additionalInfo.batteryVoltage)
+          this.dataDetail.ACC = formatAcc(data.messageDataUnit.json.stateInfo.acc)
+          this.dataDetail.vehicleStatus = formatVehicleStatus(data.messageDataUnit.json.additionalInfo.vehicleStatus)
+          this.dataDetail.speedCar = formatSpeed(data.messageDataUnit.json.additionalInfo.speed)
+          this.dataDetail.mileage = formatMileage(data.messageDataUnit.json.additionalInfo.mileage)
+          this.dataDetail.location = formatLocation(data.messageDataUnit.json.longitude,data.messageDataUnit.json.latitude)
+          this.dataDetail.elevation = formatElevation(data.messageDataUnit.json.elevation)
+          this.dataDetail.oil = formatOil(data.messageDataUnit.json.additionalInfo.oil)
+          this.dataDetail.leftFrontPressure = formatPressure(data.messageDataUnit.json.additionalInfo.leftFrontTirePressure)
+          this.dataDetail.rightFrontPressure = formatPressure(data.messageDataUnit.json.additionalInfo.rightFrontTirePressure)
+          this.dataDetail.leftRearPressure = formatPressure(data.messageDataUnit.json.additionalInfo.leftRearTirePressure)
+          this.dataDetail.rightRearPressure = formatPressure(data.messageDataUnit.json.additionalInfo.rightRearTirePressure)
+        }
+        this.wsConnection.onerror = (event) => {
+          console.log(event)
+        }
+        this.wsConnection.onclose = () => {
+          this.connected = false
+          $('#connecting-spinner').hide()
+          this.msg2Show.push({
+            type: "sys",
+            timestamp: formatTime(),
+            content: '连接已断开 (' + this.url + ')'
+          })
+          $("#msg-box").animate({ scrollTop: $("#msg-box").prop("scrollHeight") }, 400)
+        }
+      },
+
+      doDisconnect() {
+        this.wsConnection.close()
+      },
+      doSend() {
+        if (!this.connected) {
+          UIkit.notify({
+            message: '请先连接服务器',
+            status: 'warning',
+            timeout: 3000,
+            pos: 'top-right'
+          })
+          return
+        }
+        this.wsConnection.send(this.msg2Send)
+        this.msg2Show.push({
+          type: "biz-send",
+          timestamp: formatTime(),
+          content: this.msg2Send
+        })
+      },
+      doSend1() {
+        if (!this.connected) {
+          UIkit.notify({
+            message: '请先连接服务器',
+            status: 'warning',
+            timeout: 3000,
+            pos: 'top-right'
+          })
+          return
+        }
+        this.wsConnection.send(this.myMsg1)
+        this.msg2Show.push({
+          type: "biz-send",
+          timestamp: formatTime(),
+          content: this.myMsg1
+        })
+      },
+      doSend2() {
+        if (!this.connected) {
+          UIkit.notify({
+            message: '请先连接服务器',
+            status: 'warning',
+            timeout: 3000,
+            pos: 'top-right'
+          })
+          return
+        }
+        this.wsConnection.send(this.myMsg2)
+        this.msg2Show.push({
+          type: "biz-send",
+          timestamp: formatTime(),
+          content: this.myMsg2
+        })
+      },
+      doSend3() {
+        if (!this.connected) {
+          UIkit.notify({
+            message: '请先连接服务器',
+            status: 'warning',
+            timeout: 3000,
+            pos: 'top-right'
+          })
+          return
+        }
+        this.wsConnection.send(this.myMsg3)
+        this.msg2Show.push({
+          type: "biz-send",
+          timestamp: formatTime(),
+          content: this.myMsg3
+        })
+      },
+      // 判断空对象
+      isNullObj(obj){
+        if (Object.keys(obj).length === 0) {
+          return true // 如果为空,返回false
+        }
+        return false
+      }
+    },
+    computed: {
+      buttonSuccess() {
+        return {
+          backgroundColor: this.connected ? '#8cc14c' : '#35b3ee',
+          color: "#fff",
+        }
+      },
+    },
+    watch: {
+      url: function (val) {
+        localStorage.wsp_url = val
+      },
+      myMsg1: function (val) {
+        localStorage.wsp_myMsg1 = val
+      },
+      myMsg2: function (val) {
+        localStorage.wsp_myMsg2 = val
+      },
+      myMsg3: function (val) {
+        localStorage.wsp_myMsg3 = val
+      },
+    }
+  })
+
+  function formatDate(data) {
+    if(data==null){
+      return "";
+    }
+    var date = new Date(data)
+    var Y = date.getFullYear() + '-'
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+    var D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' '
+    var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':'
+    var m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':'
+    var s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
+    return Y + M + D + h + m + s
+  }
+
+  function formatAcc(data) {
+    if(data==null){
+      return "";
+    }
+    return data=="TRUE"?"ON":"0FF";
+  }
+
+  function formatVehicleStatus(data) {
+    if(data==null){
+      return "";
+    }
+    if(data == "IGNITION"){
+      return "点火";
+    }
+    if(data == "IDLING"){
+      return "怠速";
+    }
+    if(data == "STALLING"){
+      return "熄火";
+    }
+    return "无效";
+  }
+
+  function formatOil(oil) {
+    if(oil==null){
+      return "";
+    }
+    if(oil==65535){
+      return "无效";
+    }else{
+      return oil/10+"L";
+    }
+  }
+  
+  function formatAlarm(value) {
+    if(value==null){
+      return "";
+    }
+    return value;
+  }
+
+  function formatBatteryVoltage(b) {
+    if(b==null){
+      return "";
+    }
+    if(0<=b && b<=10000){
+      return b/10+"V";
+    }else{
+      return "无效";
+    }
+  }
+
+  function formatSpeed(s) {
+    if(s==null){
+      return "";
+    }
+    if(0<=s && s<=2800){
+      return s/10+"km/h";
+    }else{
+      return "无效";
+    }
+  }
+
+  function formatMileage(m) {
+    if(m==null){
+      return "";
+    }
+    if(0<=m && m<=9999999){
+      return m/10+"km";
+    }else{
+      return "无效";
+    }
+  }
+
+  function formatElevation(e) {
+    if(e==null){
+      return "";
+    }else{
+      return e+"m";
+    }
+  }
+
+  function formatLocation(longitude,latitude) {
+    if(longitude==null || latitude==null){
+      return "无效";
+    }else{
+       return longitude/1000000+","+latitude/1000000;
+    }
+  }
+
+  function formatPressure(p) {
+    if(p==null){
+      return "";
+    }
+    if(0<=p && p<=254){
+      return p*1.3725+"kPa";
+    }else{
+      return "无效";
+    }
+  }
+</script>
