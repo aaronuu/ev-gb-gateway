@@ -9,13 +9,18 @@ import com.dyy.tsp.evgb.gateway.protocol.entity.VehicleLogout;
 import com.dyy.tsp.evgb.gateway.protocol.enumtype.ResponseType;
 import com.dyy.tsp.evgb.gateway.protocol.handler.AbstractBusinessHandler;
 import com.dyy.tsp.evgb.gateway.protocol.util.HelperKeyUtil;
+import com.dyy.tsp.kafka.asyn.TaskPool;
+import com.dyy.tsp.redis.asynchronous.AsynRedisCallable;
+import com.dyy.tsp.redis.asynchronous.RedisOperation;
 import com.dyy.tsp.redis.enumtype.LibraryType;
-import com.dyy.tsp.redis.handler.RedisHandler;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * 车辆登入与车辆登出处理器
@@ -30,9 +35,6 @@ public class VehicleHandler extends AbstractBusinessHandler {
 
     @Autowired
     private ForwardHandler forwardHandler;
-
-    @Autowired
-    private RedisHandler redisHandler;
 
     @Override
     public void doBusiness(EvGBProtocol protrocol, Channel channel) {
@@ -62,7 +64,16 @@ public class VehicleHandler extends AbstractBusinessHandler {
         vehicleCache.setLastLoginTime(vehicleLogin.getBeanTime().formatTime());
         vehicleCache.setLastLoginSerialNum(vehicleLogin.getSerialNum());
         vehicleCache.setLogin(Boolean.TRUE);
-        redisHandler.set(LibraryType.VEHICLE,redisKey, JSONObject.toJSONString(vehicleCache));
+        AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.VEHICLE, RedisOperation.SET, redisKey,JSONObject.toJSONString(vehicleCache));
+        FutureTask<String> callableTask = new FutureTask<>(asynRedisCallable);
+        TaskPool.getInstance().submitTask(callableTask);
+        try {
+            callableTask.get(1, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            LOGGER.error("{} 异步获取缓存超时",redisKey);
+        } catch (Exception e){
+            LOGGER.error(redisKey+"异步获取缓存错误:",e);
+        }
         CommonCache.vehicleCacheMap.put(redisKey,vehicleCache);
         CommonCache.vinChannelMap.put(protrocol.getVin(),channel);
         CommonCache.channelVinMap.put(channel,protrocol.getVin());
@@ -82,7 +93,16 @@ public class VehicleHandler extends AbstractBusinessHandler {
         vehicleCache.setLastLogoutTime(vehicleLogout.getBeanTime().formatTime());
         vehicleCache.setLastLogoutSerialNum(vehicleLogout.getSerialNum());
         vehicleCache.setLogin(Boolean.FALSE);
-        redisHandler.set(LibraryType.VEHICLE,redisKey, JSONObject.toJSONString(vehicleCache));
+        AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.VEHICLE, RedisOperation.SET, redisKey,JSONObject.toJSONString(vehicleCache));
+        FutureTask<String> callableTask = new FutureTask<>(asynRedisCallable);
+        TaskPool.getInstance().submitTask(callableTask);
+        try {
+            callableTask.get(1, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            LOGGER.error("{} 异步获取缓存超时",redisKey);
+        } catch (Exception e){
+            LOGGER.error(redisKey+"异步获取缓存错误:",e);
+        }
         CommonCache.vehicleCacheMap.remove(redisKey);
         CommonCache.vinChannelMap.remove(protrocol.getVin());
         CommonCache.channelVinMap.remove(channel);

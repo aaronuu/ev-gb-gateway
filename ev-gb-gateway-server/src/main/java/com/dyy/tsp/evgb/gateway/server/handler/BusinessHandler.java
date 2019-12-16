@@ -13,7 +13,6 @@ import com.dyy.tsp.kafka.asyn.TaskPool;
 import com.dyy.tsp.redis.asynchronous.AsynRedisCallable;
 import com.dyy.tsp.redis.asynchronous.RedisOperation;
 import com.dyy.tsp.redis.enumtype.LibraryType;
-import com.dyy.tsp.redis.handler.RedisHandler;
 import io.netty.channel.Channel;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -40,9 +37,6 @@ public class BusinessHandler extends AbstractBusinessHandler implements Applicat
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessHandler.class);
 
     private ApplicationContext applicationContext;
-
-    @Autowired
-    private RedisHandler redisHandler;
 
     @Autowired
     private DebugHandler debugHandler;
@@ -89,11 +83,10 @@ public class BusinessHandler extends AbstractBusinessHandler implements Applicat
         }
         if(StringUtils.isBlank(cacheData)){
             return null;
-        }else{
-            vehicleCache = JSONObject.parseObject(cacheData,VehicleCache.class);
-            CommonCache.vehicleCacheMap.put(key,vehicleCache);
-            return vehicleCache;
         }
+        vehicleCache = JSONObject.parseObject(cacheData,VehicleCache.class);
+        CommonCache.vehicleCacheMap.put(key,vehicleCache);
+        return vehicleCache;
     }
 
     @Override
