@@ -38,6 +38,7 @@ public class EvGBNettyDecode extends AbstractNettyDecode<EvGBProtocol> {
             }else{
                 json = parse.parseDownJson(protocol.getCommandType(),body.getByteBuf());
             }
+            body.setJson(json);
         }
         protocol.setBody(body);
         return protocol;
