@@ -1,4 +1,4 @@
-package com.dyy.tsp.evgb.gateway.server.netty;
+package com.dyy.tsp.evgb.gateway.protocol.decode;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dyy.tsp.evgb.gateway.protocol.entity.DataBody;

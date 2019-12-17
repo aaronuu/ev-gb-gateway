@@ -37,16 +37,12 @@ public class EvGBProperties {
     //转发国标/地标
     private String evgbTopic = "dyy_evgb_data";
 
+    //协议配置
     private Integer maxFrameLength = 65556;
-
     private Integer lengthFieldOffset = 22;
-
     private Integer lengthFieldLength = 2;
-
     private Integer lengthAdjustment = 1;
-
     private Integer initialBytesToStrip = 0 ;
-
     private Boolean failFast = Boolean.TRUE;
 
 }

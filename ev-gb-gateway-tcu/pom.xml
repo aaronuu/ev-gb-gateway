@@ -36,5 +36,11 @@
             <artifactId>dyy-boot-starter-api</artifactId>
             <version>${boot.framework.version}</version>
         </dependency>
+        <!--websocket封装-->
+        <dependency>
+            <groupId>com.dyy.tsp</groupId>
+            <artifactId>dyy-boot-starter-websocket</artifactId>
+            <version>${boot.framework.version}</version>
+        </dependency>
     </dependencies>
 </project>
