@@ -43,7 +43,7 @@ dyy-boot-framework  自封装微服务脚手架
     <parent>
         <groupId>com.dyy.tsp</groupId>
         <artifactId>dyy-boot-framework</artifactId>
-        <version>1.1.1-RELEASE</version>
+        <version>1.1.2-RELEASE</version>
     </parent>
     目前已完成Redis,Kafka,MongoDb,Swagger,Nacos,第三方高德地图,第三方腾讯云/阿里云存储的封装。
     后期陆续完善私有仓库......
