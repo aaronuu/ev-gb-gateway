@@ -39,7 +39,7 @@ ev-gb-gateway-document
 dyy-boot-framework  自封装微服务脚手架
 
 	详细参考:https://github.com/15000814726/dyy-boot-framework.git
-	目前是私有仓库,需要源码可联系微信:dyy930718
+	目前是私有仓库,可联系QQ:757617714
     <parent>
         <groupId>com.dyy.tsp</groupId>
         <artifactId>dyy-boot-framework</artifactId>
