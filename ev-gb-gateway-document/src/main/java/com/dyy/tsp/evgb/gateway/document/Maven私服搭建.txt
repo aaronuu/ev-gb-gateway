@@ -1,0 +1,9 @@
+Maven私服推荐3.X版本！
+这里使用3.18版本。
+
+./nexus.exe /run
+Nexus启动完成后。访问localhost:8081
+
+设置中央仓库为http://maven.aliyun.com/nexus/content/groups/public/
+
+然后参考setting-dyy.xml

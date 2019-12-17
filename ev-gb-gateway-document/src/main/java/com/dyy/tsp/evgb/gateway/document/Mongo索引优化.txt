@@ -1,0 +1,3 @@
+location
+    db.locationHistory.createIndex({vin:1,collectTime:-1})
+    db.locationLatest.createIndex({vin:1})
