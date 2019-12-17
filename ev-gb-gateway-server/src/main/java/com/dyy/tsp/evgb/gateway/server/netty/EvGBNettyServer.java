@@ -1,9 +1,8 @@
-package com.dyy.tsp.evgb.gateway.tcu.netty;
+package com.dyy.tsp.evgb.gateway.server.netty;
 
 import com.dyy.tsp.evgb.gateway.protocol.decode.EvGBNettyDecode;
-import com.dyy.tsp.evgb.gateway.tcu.config.TcuProperties;
-import com.dyy.tsp.netty.client.AbstractNettyClient;
-import com.dyy.tsp.redis.handler.RedisHandler;
+import com.dyy.tsp.evgb.gateway.server.config.EvGBProperties;
+import com.dyy.tsp.netty.server.AbstractNettyServer;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -15,33 +14,28 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 /**
- * TCU模拟终端
  * created by dyy
+ * 基于GB32960实现数据接入网关
  */
 @SuppressWarnings("all")
-public class TcuClient extends AbstractNettyClient {
+public class EvGBNettyServer extends AbstractNettyServer {
 
-    public TcuClient(String ip, int port) {
-        super(ip, port);
-    }
+    @Autowired
+    private EvGBProperties evGBProperties;
+
+    @Autowired
+    private EvGBNettyHandler evGBNettyHandler;
+
+    @Autowired
+    private EvGBParseHandler evGBParseHandler;
 
     @Value("${logging.level.io.netty}")
     private String nettyLog;
 
-    @Autowired
-    private TcuProperties tcuProperties;
-
-    @Autowired
-    private RedisHandler redisHandler;
-
-    @Autowired
-    private TcuParseHandler tcuParseHandler;
-
-    @Autowired
-    private TcuNettyHandler tcuNettyHandler;
-
+    @Override
     public ChannelInitializer<SocketChannel> getChannelInitializer() {
         return new ChannelInitializer<SocketChannel>() {
             @Override
@@ -52,12 +46,12 @@ public class TcuClient extends AbstractNettyClient {
                     pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
                 }
                 pipeline.addLast(
-                        new LengthFieldBasedFrameDecoder(tcuProperties.getMaxFrameLength(), tcuProperties.getLengthFieldOffset()
-                                , tcuProperties.getLengthFieldLength(), tcuProperties.getLengthAdjustment()
-                                , tcuProperties.getInitialBytesToStrip(), tcuProperties.getFailFast()),
-                        new EvGBNettyDecode(tcuParseHandler,Boolean.FALSE),
-                        new IdleStateHandler(tcuProperties.getTimeout(),tcuProperties.getTimeout(), 0),
-                        tcuNettyHandler
+                        new LengthFieldBasedFrameDecoder(evGBProperties.getMaxFrameLength(), evGBProperties.getLengthFieldOffset()
+                                , evGBProperties.getLengthFieldLength(), evGBProperties.getLengthAdjustment()
+                                , evGBProperties.getInitialBytesToStrip(), evGBProperties.getFailFast()),
+                        new EvGBNettyDecode(evGBParseHandler,Boolean.TRUE),
+                        new IdleStateHandler(evGBProperties.getTimeout(),evGBProperties.getTimeout(), 0),
+                        evGBNettyHandler
                 );
             }
         };
@@ -65,8 +59,13 @@ public class TcuClient extends AbstractNettyClient {
 
     @PostConstruct
     @Override
-    public void connect() {
-        super.connect();
+    public void start() {
+        super.start();
     }
 
+    @PreDestroy
+    @Override
+    public void stop() {
+        super.stop();
+    }
 }

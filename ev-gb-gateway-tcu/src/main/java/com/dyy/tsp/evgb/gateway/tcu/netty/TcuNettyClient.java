@@ -1,8 +1,9 @@
-package com.dyy.tsp.evgb.gateway.server.netty;
+package com.dyy.tsp.evgb.gateway.tcu.netty;
 
 import com.dyy.tsp.evgb.gateway.protocol.decode.EvGBNettyDecode;
-import com.dyy.tsp.evgb.gateway.server.config.EvGBProperties;
-import com.dyy.tsp.netty.server.AbstractNettyServer;
+import com.dyy.tsp.evgb.gateway.tcu.config.TcuProperties;
+import com.dyy.tsp.netty.client.AbstractNettyClient;
+import com.dyy.tsp.redis.handler.RedisHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -14,28 +15,33 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 /**
+ * TCU模拟终端
  * created by dyy
- * 基于GB32960实现数据接入网关
  */
 @SuppressWarnings("all")
-public class EvGbGatewayServer extends AbstractNettyServer {
+public class TcuNettyClient extends AbstractNettyClient {
 
-    @Autowired
-    private EvGBProperties evGBProperties;
-
-    @Autowired
-    private EvGBNettyHandler evGBNettyHandler;
-
-    @Autowired
-    private EvGBParseHandler evGBParseHandler;
+    public TcuNettyClient(String ip, int port) {
+        super(ip, port);
+    }
 
     @Value("${logging.level.io.netty}")
     private String nettyLog;
 
-    @Override
+    @Autowired
+    private TcuProperties tcuProperties;
+
+    @Autowired
+    private RedisHandler redisHandler;
+
+    @Autowired
+    private TcuParseHandler tcuParseHandler;
+
+    @Autowired
+    private TcuNettyHandler tcuNettyHandler;
+
     public ChannelInitializer<SocketChannel> getChannelInitializer() {
         return new ChannelInitializer<SocketChannel>() {
             @Override
@@ -46,12 +52,12 @@ public class EvGbGatewayServer extends AbstractNettyServer {
                     pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
                 }
                 pipeline.addLast(
-                        new LengthFieldBasedFrameDecoder(evGBProperties.getMaxFrameLength(), evGBProperties.getLengthFieldOffset()
-                                , evGBProperties.getLengthFieldLength(), evGBProperties.getLengthAdjustment()
-                                , evGBProperties.getInitialBytesToStrip(), evGBProperties.getFailFast()),
-                        new EvGBNettyDecode(evGBParseHandler,Boolean.TRUE),
-                        new IdleStateHandler(evGBProperties.getTimeout(),evGBProperties.getTimeout(), 0),
-                        evGBNettyHandler
+                        new LengthFieldBasedFrameDecoder(tcuProperties.getMaxFrameLength(), tcuProperties.getLengthFieldOffset()
+                                , tcuProperties.getLengthFieldLength(), tcuProperties.getLengthAdjustment()
+                                , tcuProperties.getInitialBytesToStrip(), tcuProperties.getFailFast()),
+                        new EvGBNettyDecode(tcuParseHandler,Boolean.FALSE),
+                        new IdleStateHandler(tcuProperties.getTimeout(),tcuProperties.getTimeout(), 0),
+                        tcuNettyHandler
                 );
             }
         };
@@ -59,13 +65,8 @@ public class EvGbGatewayServer extends AbstractNettyServer {
 
     @PostConstruct
     @Override
-    public void start() {
-        super.start();
+    public void connect() {
+        super.connect();
     }
 
-    @PreDestroy
-    @Override
-    public void stop() {
-        super.stop();
-    }
 }

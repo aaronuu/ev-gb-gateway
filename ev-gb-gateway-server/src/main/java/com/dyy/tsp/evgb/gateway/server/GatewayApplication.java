@@ -1,7 +1,7 @@
 package com.dyy.tsp.evgb.gateway.server;
 
 import com.dyy.tsp.evgb.gateway.server.config.EvGBProperties;
-import com.dyy.tsp.evgb.gateway.server.netty.EvGbGatewayServer;
+import com.dyy.tsp.evgb.gateway.server.netty.EvGBNettyServer;
 import com.dyy.tsp.kafka.config.KafkaProperties;
 import com.dyy.tsp.kafka.config.ProducerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +21,13 @@ public class GatewayApplication {
     private EvGBProperties evGBProperties;
 
     @Bean
-    public EvGbGatewayServer evGbGatewayServer() {
-        EvGbGatewayServer evGbGatewayServer = new EvGbGatewayServer();
-        evGbGatewayServer.setPort(evGBProperties.getPort());
-        evGbGatewayServer.setTimeout(evGBProperties.getTimeout());
-        evGbGatewayServer.setSoBackLog(evGBProperties.getSoBackLog());
-        evGbGatewayServer.setWorkLoopCount(evGBProperties.getWorkLoopCount());
-        return evGbGatewayServer;
+    public EvGBNettyServer server() {
+        EvGBNettyServer server = new EvGBNettyServer();
+        server.setPort(evGBProperties.getPort());
+        server.setTimeout(evGBProperties.getTimeout());
+        server.setSoBackLog(evGBProperties.getSoBackLog());
+        server.setWorkLoopCount(evGBProperties.getWorkLoopCount());
+        return server;
     }
 
     public static void main(String[] args) {

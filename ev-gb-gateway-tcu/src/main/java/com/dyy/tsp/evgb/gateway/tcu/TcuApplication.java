@@ -1,7 +1,7 @@
 package com.dyy.tsp.evgb.gateway.tcu;
 
 import com.dyy.tsp.evgb.gateway.tcu.config.TcuProperties;
-import com.dyy.tsp.evgb.gateway.tcu.netty.TcuClient;
+import com.dyy.tsp.evgb.gateway.tcu.netty.TcuNettyClient;
 import com.dyy.tsp.kafka.config.KafkaProperties;
 import com.dyy.tsp.kafka.config.ProducerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,8 @@ public class TcuApplication {
     private TcuProperties tcuProperties;
 
     @Bean
-    public TcuClient client() {
-        TcuClient client = new TcuClient(tcuProperties.getServerHost(),tcuProperties.getServerPort());
+    public TcuNettyClient client() {
+        TcuNettyClient client = new TcuNettyClient(tcuProperties.getServerHost(),tcuProperties.getServerPort());
         client.setTimeout(tcuProperties.getTimeout());
         client.setConnectMaxNum(tcuProperties.getReconnectMaxNum());
         return client;
