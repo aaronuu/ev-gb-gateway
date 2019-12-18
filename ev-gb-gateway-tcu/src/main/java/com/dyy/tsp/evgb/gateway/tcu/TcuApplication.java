@@ -2,8 +2,6 @@ package com.dyy.tsp.evgb.gateway.tcu;
 
 import com.dyy.tsp.evgb.gateway.tcu.config.TcuProperties;
 import com.dyy.tsp.evgb.gateway.tcu.netty.TcuNettyClient;
-import com.dyy.tsp.kafka.config.KafkaProperties;
-import com.dyy.tsp.kafka.config.ProducerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 
-@EnableConfigurationProperties(value = {TcuProperties.class, KafkaProperties.class, ProducerProperties.class})
+@EnableConfigurationProperties(value = {TcuProperties.class})
 @SpringBootApplication
 @EnableDiscoveryClient
 public class TcuApplication {

@@ -1,9 +1,6 @@
 package com.dyy.tsp.evgb.gateway.tcu.api;
 
 import com.dyy.tsp.common.entity.Response;
-import com.dyy.tsp.common.exception.BusinessError;
-import com.dyy.tsp.common.exception.BusinessException;
-import com.dyy.tsp.evgb.gateway.tcu.error.TcuError;
 import com.dyy.tsp.evgb.gateway.tcu.handler.TcuHandler;
 import com.dyy.tsp.evgb.gateway.tcu.vo.*;
 import io.swagger.annotations.Api;
@@ -72,17 +69,5 @@ public class TcuApi {
     public Response checkTime(@ApiParam("车架号")@RequestParam(value = "vin") String vin){
         tcuHandler.checkTime(vin);
         return Response.success();
-    }
-
-    @ApiOperation(value = "业务异常测试")
-    @RequestMapping(value = "errorTest1",method = RequestMethod.GET)
-    public Response errorTest1(){
-        throw new BusinessException(new BusinessError(TcuError.ERROR_NAME.getNamespace(),TcuError.ERROR_NAME.getCode(),TcuError.ERROR_NAME.getDesc()));
-    }
-
-    @ApiOperation(value = "系统异常测试")
-    @RequestMapping(value = "errorTest2",method = RequestMethod.GET)
-    public Response errorTest2(){
-        throw new RuntimeException();
     }
 }
