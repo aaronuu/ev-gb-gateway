@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @SuppressWarnings("all")
 @Api
-@RequestMapping(value = "tcu")
+@RequestMapping(value = "tcu",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
 public class TcuApi {
 
