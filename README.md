@@ -46,8 +46,10 @@ dyy-boot-framework  自封装微服务脚手架
         <artifactId>dyy-boot-framework</artifactId>
         <version>1.1.2-RELEASE</version>
     </parent>
-    目前已完成Redis,Kafka,MongoDb,Swagger,Nacos,第三方高德地图,第三方腾讯云/阿里云存储的封装。
-    后期陆续完善私有仓库......
+    配置中心/注册中心都用Nacos
+    目前已完成Netty,Redis,Kafka,MongoDb,Swagger,Nacos,ES,第三方高德地图,第三方腾讯云/阿里云存储的封装。(已实测)
+    后期陆续完善脚手架,比如对Hbase，myql，微服务网关熔断/流等都要进行封装！
+  
 
 你需要掌握以下技能:
 
