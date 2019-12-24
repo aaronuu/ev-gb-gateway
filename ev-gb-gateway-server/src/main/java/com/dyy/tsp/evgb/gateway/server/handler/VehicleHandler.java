@@ -1,6 +1,7 @@
 package com.dyy.tsp.evgb.gateway.server.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dyy.tsp.common.asyn.TaskPool;
 import com.dyy.tsp.evgb.gateway.protocol.common.CommonCache;
 import com.dyy.tsp.evgb.gateway.protocol.entity.EvGBProtocol;
 import com.dyy.tsp.evgb.gateway.protocol.entity.VehicleCache;
@@ -9,7 +10,6 @@ import com.dyy.tsp.evgb.gateway.protocol.entity.VehicleLogout;
 import com.dyy.tsp.evgb.gateway.protocol.enumtype.ResponseType;
 import com.dyy.tsp.evgb.gateway.protocol.handler.AbstractBusinessHandler;
 import com.dyy.tsp.evgb.gateway.protocol.util.HelperKeyUtil;
-import com.dyy.tsp.kafka.asyn.TaskPool;
 import com.dyy.tsp.redis.asynchronous.AsynRedisCallable;
 import com.dyy.tsp.redis.asynchronous.RedisOperation;
 import com.dyy.tsp.redis.enumtype.LibraryType;
@@ -66,7 +66,7 @@ public class VehicleHandler extends AbstractBusinessHandler {
         vehicleCache.setLogin(Boolean.TRUE);
         AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.VEHICLE, RedisOperation.SET, redisKey,JSONObject.toJSONString(vehicleCache));
         FutureTask<String> callableTask = new FutureTask<>(asynRedisCallable);
-        TaskPool.getInstance().submitTask(callableTask);
+        TaskPool.getInstance().submit(callableTask);
         try {
             callableTask.get(1, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
@@ -95,7 +95,7 @@ public class VehicleHandler extends AbstractBusinessHandler {
         vehicleCache.setLogin(Boolean.FALSE);
         AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.VEHICLE, RedisOperation.SET, redisKey,JSONObject.toJSONString(vehicleCache));
         FutureTask<String> callableTask = new FutureTask<>(asynRedisCallable);
-        TaskPool.getInstance().submitTask(callableTask);
+        TaskPool.getInstance().submit(callableTask);
         try {
             callableTask.get(1, TimeUnit.SECONDS);
         } catch (TimeoutException e) {

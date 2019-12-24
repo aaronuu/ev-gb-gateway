@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -22,6 +23,9 @@ public class TcuApi {
 
     @Autowired
     private TcuHandler tcuHandler;
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
     @ApiOperation(value = "Redis指令下发")
     @RequestMapping(value = "commandDown",method = RequestMethod.POST)
@@ -69,6 +73,14 @@ public class TcuApi {
     @RequestMapping(value = "checkTime",method = RequestMethod.GET)
     public Response checkTime(@ApiParam("车架号")@RequestParam(value = "vin") String vin){
         tcuHandler.checkTime(vin);
+        return Response.success();
+    }
+
+    @ApiOperation(value = "kafka发送消息")
+    @RequestMapping(value = "sendMessage",method = RequestMethod.GET)
+    public Response checkTime(@ApiParam("主题")@RequestParam(value = "topic") String topic,
+                              @ApiParam("消息")@RequestParam(value = "message") String message){
+        kafkaTemplate.send(topic,message);
         return Response.success();
     }
 }
