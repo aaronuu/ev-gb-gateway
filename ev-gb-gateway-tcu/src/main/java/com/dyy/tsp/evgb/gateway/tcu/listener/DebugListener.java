@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.TextMessage;
 
 /**
  * 在线监控监听器
@@ -29,11 +28,7 @@ public class DebugListener {
     public void listen(String message) {
         TaskPool.getInstance().submit(()->{
             EvGBProtocol protocol = JSONObject.parseObject(message, EvGBProtocol.class);
-            if(debugWebSocketHandler.getDevices().get(protocol.getVin())!=null){
-                debugWebSocketHandler.sendMessage(protocol.getVin(), new TextMessage(message));
-            }
+            debugWebSocketHandler.sendMessage(message,protocol.getVin());
         });
-        LOGGER.debug("线程池中线程数："+TaskPool.getInstance().getPoolSize()+"，队列中等待执行的任务数目："+ TaskPool.getInstance().getQueue().size()+"，已执行完的任务数目："+TaskPool.getInstance().getCompletedTaskCount());
     }
-
 }
