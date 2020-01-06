@@ -9,11 +9,9 @@ ev-gb-gateway-server
 	主要技术:Netty,Kafka,内存+Redis二级缓存/订阅发布
 	特点:高性能,高并发,高可用,支持K8S同POD多副本集群部署,横向拓展扩容
 	808协议的压测简介:基于16c32g云虚拟主机。JVM内存给的8G!
-	        IO密集型机器实测单节点TPS稳定高达24000/s。(扩大内存到24G,预估能上50000+/s
+	        IO密集型机器实测单节点TPS稳定高达50000/s
 	        参考Netty项目实战优化文档1.0.docx(808协议的压测)
-	        GB32960的压测待验证！！！808是我干过最垃圾的协议！
-	        与808压测同等条件下,自定义通讯协议TPS可以上60000+/s
-
+	        GB32960的压测待验证！！！
 
 ev-gb-gateway-tcu
 
@@ -47,8 +45,9 @@ dyy-boot-framework  自封装微服务脚手架
         <version>1.1.2-RELEASE</version>
     </parent>
     配置中心/注册中心都用Nacos
-    目前已完成Netty,Redis,Kafka,MongoDb,Swagger,Nacos,ES,第三方高德地图,第三方腾讯云/阿里云存储的封装。(已实测)
-    后期陆续完善脚手架,Hbase,mysql,微服务网关熔断/限流
+    目前已完成TkMybatis,Http,Api,Swagger,WebSocket,Kafka,Hbase,Redis,Mongo,Es,Netty....等基本封装。
+    其中https://github.com/15000814726/ev-gb-gateway.git,https://github.com/15000814726/location.git,
+    https://github.com/15000814726/vehicle.git为技术验证项目。可以参考具体的Test与Readme
   
 
 你需要掌握以下技能:
