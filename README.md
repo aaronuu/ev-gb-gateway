@@ -33,17 +33,4 @@ ev-gb-gateway-document
 
 	功能:文档
 
-你需要掌握以下技能:
-
-	1.springboot,springcloud
-    2.netty NIO编程
-    3.redis,kafka,es,moongo,hbase,canal,mysql各种中间件
-    4.poi 报表
-    5.websocket
-    6.第三方高德地图对接
-    7.第三方阿里云/腾讯云存储
-    8.自建Maven私服
-    9.自建Nacos注册/配置中心
-    ................
-
 
