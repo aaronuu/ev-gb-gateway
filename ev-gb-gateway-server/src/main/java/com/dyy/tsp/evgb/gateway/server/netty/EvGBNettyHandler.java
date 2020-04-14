@@ -6,7 +6,7 @@ import com.dyy.tsp.evgb.gateway.protocol.entity.EvGBProtocol;
 import com.dyy.tsp.evgb.gateway.protocol.util.HelperKeyUtil;
 import com.dyy.tsp.evgb.gateway.server.handler.BusinessHandler;
 import com.dyy.tsp.netty.common.IProtocol;
-import com.dyy.tsp.netty.handler.AbstractNettyHandler;
+import com.dyy.tsp.netty.tcp.handler.AbstractNettyHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

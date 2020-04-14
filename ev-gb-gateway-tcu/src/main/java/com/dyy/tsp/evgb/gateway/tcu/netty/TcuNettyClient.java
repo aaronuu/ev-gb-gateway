@@ -2,7 +2,7 @@ package com.dyy.tsp.evgb.gateway.tcu.netty;
 
 import com.dyy.tsp.evgb.gateway.protocol.decode.EvGBNettyDecode;
 import com.dyy.tsp.evgb.gateway.tcu.config.TcuProperties;
-import com.dyy.tsp.netty.client.AbstractNettyClient;
+import com.dyy.tsp.netty.tcp.client.AbstractNettyClient;
 import com.dyy.tsp.redis.handler.RedisHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;

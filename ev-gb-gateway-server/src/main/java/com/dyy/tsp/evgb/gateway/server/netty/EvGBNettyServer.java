@@ -2,7 +2,7 @@ package com.dyy.tsp.evgb.gateway.server.netty;
 
 import com.dyy.tsp.evgb.gateway.protocol.decode.EvGBNettyDecode;
 import com.dyy.tsp.evgb.gateway.server.config.EvGBProperties;
-import com.dyy.tsp.netty.server.AbstractNettyServer;
+import com.dyy.tsp.netty.tcp.server.AbstractNettyServer;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dyy.tsp.evgb.gateway.protocol.entity.DataBody;
 import com.dyy.tsp.evgb.gateway.protocol.entity.EvGBProtocol;
 import com.dyy.tsp.evgb.gateway.protocol.parse.IParse;
-import com.dyy.tsp.netty.decode.AbstractNettyDecode;
+import com.dyy.tsp.netty.tcp.decode.AbstractNettyDecode;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

@@ -7,7 +7,7 @@ import com.dyy.tsp.evgb.gateway.protocol.enumtype.ResponseType;
 import com.dyy.tsp.evgb.gateway.tcu.config.TcuProperties;
 import com.dyy.tsp.evgb.gateway.tcu.handler.BusinessHandler;
 import com.dyy.tsp.netty.common.IProtocol;
-import com.dyy.tsp.netty.handler.AbstractNettyHandler;
+import com.dyy.tsp.netty.tcp.handler.AbstractNettyHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
