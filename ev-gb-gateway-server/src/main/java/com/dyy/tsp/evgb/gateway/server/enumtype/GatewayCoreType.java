@@ -68,7 +68,7 @@ public enum GatewayCoreType {
 
     public static GatewayCoreType valuesOf(Short id) {
         for (GatewayCoreType enums : GatewayCoreType.values()) {
-            if (enums.getId()==id) {
+            if (enums.getId()==id.shortValue()) {
                 return enums;
             }
         }

@@ -70,7 +70,7 @@ public class BusinessHandler extends AbstractBusinessHandler implements Applicat
         if(vehicleCache!=null){
             return vehicleCache;
         }
-        AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.VEHICLE, RedisOperation.GET, key);
+        AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.BOOT_DEMO, RedisOperation.GET, key);
         FutureTask<String> callableTask = new FutureTask<>(asynRedisCallable);
         TaskPool.getInstance().submit(callableTask);
         String cacheData = null;

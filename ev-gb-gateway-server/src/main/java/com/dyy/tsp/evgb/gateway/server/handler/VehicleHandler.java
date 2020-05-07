@@ -64,7 +64,7 @@ public class VehicleHandler extends AbstractBusinessHandler {
         vehicleCache.setLastLoginTime(vehicleLogin.getBeanTime().formatTime());
         vehicleCache.setLastLoginSerialNum(vehicleLogin.getSerialNum());
         vehicleCache.setLogin(Boolean.TRUE);
-        AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.VEHICLE, RedisOperation.SET, redisKey,JSONObject.toJSONString(vehicleCache));
+        AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.BOOT_DEMO, RedisOperation.SET, redisKey,JSONObject.toJSONString(vehicleCache));
         FutureTask<String> callableTask = new FutureTask<>(asynRedisCallable);
         TaskPool.getInstance().submit(callableTask);
         try {
@@ -93,7 +93,7 @@ public class VehicleHandler extends AbstractBusinessHandler {
         vehicleCache.setLastLogoutTime(vehicleLogout.getBeanTime().formatTime());
         vehicleCache.setLastLogoutSerialNum(vehicleLogout.getSerialNum());
         vehicleCache.setLogin(Boolean.FALSE);
-        AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.VEHICLE, RedisOperation.SET, redisKey,JSONObject.toJSONString(vehicleCache));
+        AsynRedisCallable asynRedisCallable = new AsynRedisCallable(LibraryType.BOOT_DEMO, RedisOperation.SET, redisKey,JSONObject.toJSONString(vehicleCache));
         FutureTask<String> callableTask = new FutureTask<>(asynRedisCallable);
         TaskPool.getInstance().submit(callableTask);
         try {

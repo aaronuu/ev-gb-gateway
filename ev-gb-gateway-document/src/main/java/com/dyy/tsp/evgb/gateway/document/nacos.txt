@@ -1,8 +1,0 @@
-Nacos作为微服务的注册中心与配置中心！
-具体教程参考
-https://blog.csdn.net/wk52525/article/details/88096295
-
-快速启动Nacos服务
-http://127.0.0.1:8848/nacos/index.html访问控制台
-
-这里不集成Nacos和微服务。后期有时间再细致封装dyy-boot开发脚手架
